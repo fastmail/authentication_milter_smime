@@ -1,27 +1,20 @@
-Authentication Milter Extra
----------------------------
+Authentication Milter SMIME
+--------------------------
 
-Extra handler modules for [Authentication Milter](https://github.com/fastmail/authentication_milter).
+SMIME handler module for [Authentication Milter](https://github.com/fastmail/authentication_milter).
 A Perl implementation of email authentication standards rolled up into a single easy to use milter.
-
-This repo provides the following additional modules.
-
-- SpamAssassin - Runs mail through SpamAssassin
-- UserDB map local emails to local users (used in SpamAssassin module)
-
-UserDB map currently only supports a hash: style table.
 
 These handlers are not considered production ready and may not be fully documented.
 
 Badges
 ------
 
-[![Code on GitHub](https://img.shields.io/badge/github-repo-blue.svg)](https://github.com/marcbradshaw/authentication_milter_extra) [![Build Status](https://travis-ci.org/marcbradshaw/authentication_milter_extra.svg?branch=master)](https://travis-ci.org/marcbradshaw/authentication_milter_extra) [![Open Issues](https://img.shields.io/github/issues/marcbradshaw/authentication_milter_extra.svg)](https://github.com/marcbradshaw/authentication_milter_extra/issues) [![Dist on CPAN](https://img.shields.io/cpan/v/Mail-Milter-Authentication-Extra.svg)](https://metacpan.org/release/Mail-Milter-Authentication-Extra) [![CPANTS](https://img.shields.io/badge/cpants-kwalitee-blue.svg)](http://cpants.cpanauthors.org/dist/Mail-Milter-Authentication-Extra)
+[![Code on GitHub](https://img.shields.io/badge/github-repo-blue.svg)](https://github.com/fastmail/authentication_milter_smime) [![Build Status](https://travis-ci.org/fastmail/authentication_milter_smime.svg?branch=master)](https://travis-ci.org/fastmail/authentication_milter_smime) [![Open Issues](https://img.shields.io/github/issues/fastmail/authentication_milter_smime.svg)](https://github.com/fastmail/authentication_milter_smime/issues) [![Dist on CPAN](https://img.shields.io/cpan/v/Mail-Milter-Authentication-SMIME.svg)](https://metacpan.org/release/Mail-Milter-Authentication-SMIME) [![CPANTS](https://img.shields.io/badge/cpants-kwalitee-blue.svg)](http://cpants.cpanauthors.org/dist/Mail-Milter-Authentication-SMIME)
 
 Installation
 ------------
 
-You will first need to install and configure Authentication Milter and Spam Assassin
+You will first need to install and configure Authentication Milter
 
 To install this module, run the following commands:
 
@@ -33,8 +26,7 @@ To install this module, run the following commands:
 Config
 ------
 
-Please see the output of 'authentication_milter --help SpamAssassin' and
-'authentication_milter --help UserDB'
+Please see the output of 'authentication_milter --help SMIME
 
 Credits and License
 -------------------

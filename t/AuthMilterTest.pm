@@ -9,7 +9,7 @@ use Cwd qw{ cwd };
 use IO::Socket::INET;
 use IO::Socket::UNIX;
 use Module::Load;
-        
+
 use Mail::Milter::Authentication;
 use Mail::Milter::Authentication::Client;
 use Mail::Milter::Authentication::Config;
@@ -31,9 +31,9 @@ our $MASTER_PROCESS_PID = $$;
         if ( ! -e $prefix . '/authentication_milter.json' ) {
             die "Could not find config";
         }
-    
+
         system "cp $prefix/mail-dmarc.ini .";
-        
+
         $milter_pid = fork();
         die "unable to fork: $!" unless defined($milter_pid);
         if (!$milter_pid) {
@@ -195,68 +195,6 @@ sub milter_process {
     });
 
     files_eq( 'data/example/' . $args->{'dest'}, 'tmp/result/' . $args->{'dest'}, 'milter ' . $args->{'desc'} );
-
-    return;
-}
-
-sub run_milter_processing_spam {
-
-    start_milter( 'config/spam' );
-
-    milter_process({
-        'desc'   => 'Gtube',
-        'prefix' => 'config/spam',
-        'source' => 'gtube.eml',
-        'dest'   => 'gtube.eml',
-        'ip'     => '74.125.82.171',
-        'name'   => 'mail-we0-f171.google.com',
-        'from'   => 'marc@marcbradshaw.net',
-        'to'     => 'marc@fastmail.com',
-    });
-
-    milter_process({
-        'desc'   => 'Gtube local',
-        'prefix' => 'config/spam',
-        'source' => 'gtube2.eml',
-        'dest'   => 'gtube2.eml',
-        'ip'     => '74.125.82.171',
-        'name'   => 'mail-we0-f171.google.com',
-        'from'   => 'marc@marcbradshaw.net',
-        'to'     => 'recipient2@example.net',
-    });
-
-    stop_milter();
-
-    return;
-}
-
-sub run_smtp_processing_spam {
-
-    start_milter( 'config/spam.smtp' );
-
-    smtp_process({
-        'desc'   => 'Gtube',
-        'prefix' => 'config/spam.smtp',
-        'source' => 'gtube.eml',
-        'dest'   => 'gtube.smtp.eml',
-        'ip'     => '74.125.82.171',
-        'name'   => 'mail-we0-f171.google.com',
-        'from'   => 'marc@marcbradshaw.net',
-        'to'     => 'marc@fastmail.com',
-    });
-
-    smtp_process({
-        'desc'   => 'Gtube local',
-        'prefix' => 'config/spam.smtp',
-        'source' => 'gtube2.eml',
-        'dest'   => 'gtube2.smtp.eml',
-        'ip'     => '74.125.82.171',
-        'name'   => 'mail-we0-f171.google.com',
-        'from'   => 'marc@marcbradshaw.net',
-        'to'     => 'recipient2@example.net',
-    });
-
-    stop_milter();
 
     return;
 }

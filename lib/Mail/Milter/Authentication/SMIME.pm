@@ -1,4 +1,4 @@
-package Mail::Milter::Authentication::Extra;
+package Mail::Milter::Authentication::SMIME;
 use strict;
 use warnings;
 use version; our $VERSION = version->declare('v1.0.2');
@@ -9,7 +9,7 @@ __END__
 
 =head1 NAME
 
-Mail::Milter::Authentication::Extra - A Perl Mail Authentication Milter extra handler modules
+Mail::Milter::Authentication::SMIME - A Perl Mail Authentication Milter smime handler modules
 
 =head1 DESCRIPTION
 
@@ -25,9 +25,6 @@ Please see the output of 'authentication_milter --help' for usage help.
 =head1 DEPENDENCIES
 
   Mail::Milter::Authentication
-  Mail::SpamAssassin
-  Mail::SpamAssassin::Client
-  DB_File
 
 =head1 AUTHORS
 
@@ -35,7 +32,7 @@ Marc Bradshaw E<lt>marc@marcbradshaw.netE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2015
+Copyright 2016
 
 This library is free software; you may redistribute it and/or
 modify it under the same terms as Perl itself.

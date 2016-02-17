@@ -3,8 +3,8 @@ use strict;
 use warnings FATAL => 'all';
 use inc::Module::Install;
 
-name     'Mail-Milter-Authentication-Extra';
-all_from 'lib/Mail/Milter/Authentication/Extra.pm';
+name     'Mail-Milter-Authentication-SMIME';
+all_from 'lib/Mail/Milter/Authentication/SMIME.pm';
 author   q{Marc Bradshaw <marc@marcbradshaw.net>};
 license  'perl';
 
@@ -16,8 +16,8 @@ resources (
    #homepage   => '',
    #IRC        => 'irc://irc.perl.org/#Mail-Milter-Authentication',
    license    => 'http://dev.perl.org/licenses/',
-   repository => 'https://github.com/marcbradshaw/authentication_milter_extra/',
-   bugtracker => 'https://github.com/marcbradshaw/authentication_milter_extra/issues/',
+   repository => 'https://github.com/fastmail/authentication_milter_smime/',
+   bugtracker => 'https://github.com/fastmail/authentication_milter_smime/issues/',
 );
 
 configure_requires (
@@ -36,11 +36,10 @@ build_requires (
 );
 
 requires (
-    'Cwd'                   => 0,
-    'DB_File'               => 0,
+    'Convert::X509' => 0,
+    'Crypt::SMIME'  => 0,
+    'Email::MIME'   => 0,
     'Mail::Milter::Authentication' => 0,
-    'Mail::SpamAssassin'    => 0,
-    'Mail::SpamAssassin::Client' => 0,
 );
 
 install_as_cpan;
