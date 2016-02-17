@@ -13,6 +13,7 @@ use Email::MIME;
 
 sub default_config {
     return {
+        'hide_none' => 0,
         'pki_store' => '/etc/ssl/certs',
    };
 }
@@ -46,6 +47,8 @@ sub body_callback {
 sub eom_callback {
     my ( $self ) = @_;
 
+    my $config = $self->handler_config();
+
     my $data = join( q{}, @{ $self->{'data'} } );
 
     eval {
@@ -53,9 +56,11 @@ sub eom_callback {
         $self->_parse_mime( $parsed );
 
         if ( $self->{'found'} == 0 ) {
-            $self->add_auth_header(
-                $self->format_header_entry( 'smime', 'none' ),
-            );
+            if ( !( $config->{'hide_none'} ) ) {
+                $self->add_auth_header(
+                    $self->format_header_entry( 'smime', 'none' ),
+                );
+            }
         }
         elsif ( $self->{'added'} == 0 ) {
             $self->add_auth_header(
