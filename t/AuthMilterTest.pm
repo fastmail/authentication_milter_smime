@@ -276,6 +276,17 @@ sub run_milter_processing_smime {
         'to'     => 'marc@fastmail.com',
     });
 
+    milter_process({
+        'desc'   => 'Smime',
+        'prefix' => 'config/smime',
+        'source' => 'smime3.eml',
+        'dest'   => 'smime3.eml',
+        'ip'     => '74.125.82.171',
+        'name'   => 'mail-we0-f171.google.com',
+        'from'   => 'marc@marcbradshaw.net',
+        'to'     => 'marc@fastmail.com',
+    });
+
     stop_milter();
 
     return;
@@ -290,6 +301,17 @@ sub run_smtp_processing_smime {
         'prefix' => 'config/smime.smtp',
         'source' => 'smime.eml',
         'dest'   => 'smime.smtp.eml',
+        'ip'     => '74.125.82.171',
+        'name'   => 'mail-we0-f171.google.com',
+        'from'   => 'marc@marcbradshaw.net',
+        'to'     => 'marc@fastmail.com',
+    });
+
+    smtp_process({
+        'desc'   => 'Smime',
+        'prefix' => 'config/smime.smtp',
+        'source' => 'smime3.eml',
+        'dest'   => 'smime3.smtp.eml',
         'ip'     => '74.125.82.171',
         'name'   => 'mail-we0-f171.google.com',
         'from'   => 'marc@marcbradshaw.net',
