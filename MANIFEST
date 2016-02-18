@@ -1,5 +1,4 @@
 Changes
-lib/Mail/Milter/Authentication/SMIME.pm
 lib/Mail/Milter/Authentication/Handler/SMIME.pm
 LICENCE
 Makefile.PL
