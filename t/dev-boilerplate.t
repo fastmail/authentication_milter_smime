@@ -45,7 +45,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/Mail/Milter/Authentication/SMIME.pm');
+  module_boilerplate_ok('lib/Mail/Milter/Authentication/Handler/SMIME.pm');
 
 
 }
