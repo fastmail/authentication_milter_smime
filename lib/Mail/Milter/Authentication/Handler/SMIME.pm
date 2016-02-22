@@ -28,13 +28,13 @@ sub envfrom_callback {
 
 sub header_callback {
     my ( $self, $header, $value ) = @_;
-    push @{$self->{'data'}} , $header . ': ' . $value . "\r\n";
+    push @{$self->{'data'}} , $header . ': ' . $value . "\n";
     return;
 }
 
 sub eoh_callback {
     my ( $self ) = @_;
-    push @{$self->{'data'}} , "\r\n";
+    push @{$self->{'data'}} , "\n";
     return;
 }
 
@@ -50,6 +50,9 @@ sub eom_callback {
     my $config = $self->handler_config();
 
     my $data = join( q{}, @{ $self->{'data'} } );
+    $data =~ s/\r//g;
+#    my $EOL        = "\015\012";
+#    $data =~ s/\015?\012/$EOL/g;
 
     eval {
         my $parsed = Email::MIME->new( $data );
@@ -83,6 +86,8 @@ sub _parse_mime {
     my ( $self, $mime ) = @_;
 
     my $content_type = $mime->content_type();
+    $self->{'thischild'}->loginfo( 'SMIME Parse Type ' . $content_type );
+    
     $content_type =~ s/;.*//;
 
     if ( $content_type eq 'multipart/signed' ) {
@@ -99,6 +104,7 @@ sub _parse_mime {
     }
 
     my @parts = $mime->subparts();
+    $self->{'thischild'}->loginfo( 'SMIME Has Subparts ' . scalar @parts );
 
     foreach my $part ( @parts ) {
         $self->_parse_mime( $part );
@@ -137,23 +143,28 @@ sub _check_mime {
         };
         if ( my $error = $@ ) {
             $self->log_error( 'SMIME check Error ' . $error );
-            $self->add_auth_header(
-                $self->format_header_entry( 'smime', 'fail' ),
-            );
-            $self->{'added'} = 1;
+            my $signatures = Crypt::SMIME::getSigners( $data );
+            my $all_certs  = Crypt::SMIME::extractCertificates( $data );
+            $self->_decode_certs( 'fail', $signatures, $all_certs );
             ## ToDo extract the reason for failure and add as header comment
+            if ( $self->{'added'} == 0 ) {
+                $self->add_auth_header(
+                    $self->format_header_entry( 'smime', 'fail' ),
+                );
+                $self->{'added'} = 1;
+            }
         }
         else {
             my $signatures = Crypt::SMIME::getSigners( $data );
             my $all_certs  = Crypt::SMIME::extractCertificates( $data );
-            $self->_decode_certs( $signatures, $all_certs );
+            $self->_decode_certs( 'pass', $signatures, $all_certs );
         }
     }
 
 }
 
 sub _decode_certs {
-    my ( $self, $signatures, $all_certs ) = @_;
+    my ( $self, $passfail, $signatures, $all_certs ) = @_;
 
     my $seen = {};
 
@@ -188,7 +199,7 @@ sub _decode_certs {
         push @results, 'x-smime-valid-to="'   . $self->format_ctext( $to ) . '"';
         $self->add_auth_header(
             join( "\n        ",
-                $self->format_header_entry( 'smime', 'pass' ),
+                $self->format_header_entry( 'smime', $passfail ),
                 @results,
             )
         );
@@ -223,13 +234,13 @@ sub _decode_certs {
         push @results, 'x-smime-chain-issuer="' . $self->format_ctext( $issuer_text ) . '"' ;
         push @results, 'x-smime-chain-valid-from="' . $self->format_ctext( $from ) . '"';
         push @results, 'x-smime-chain-valid-to="'   . $self->format_ctext( $to ) . '"';
-        #        $self->add_auth_header(
-        #            join( "\n        ",
-        #                $self->format_header_entry( 'x-smime-chain', 'pass' ),
-        #                @results,
-        #            )
-        #        );
-        #        $self->{'added'} = 1;
+                $self->add_auth_header(
+                    join( "\n        ",
+                        $self->format_header_entry( 'x-smime-chain', 'info' ),
+                        @results,
+                    )
+                );
+                $self->{'added'} = 1;
     }
 
     return;

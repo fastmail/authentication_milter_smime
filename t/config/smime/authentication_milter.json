@@ -1,8 +1,8 @@
 {
 
-    "debug"                           : 0,
+    "debug"                           : 1,
     "dryrun"                          : 0,
-    "logtoerr"                        : 0,
+    "logtoerr"                        : 1,
     "error_log"                       : "tmp/milter.err",
     "connection"                      : "unix:tmp/authentication_milter_test.sock",
     "umask"                           : "0000",
