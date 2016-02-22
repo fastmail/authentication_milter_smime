@@ -104,6 +104,9 @@ sub smtp_process {
 
     waitpid( $cat_pid,0 );
 
+    system( 'sed -i -r "s|-valid-from=.*|-valid-from=XXX|" tmp/result/' . $args->{'dest'} );
+    system( 'sed -i -r "s|-valid-to=.*|-valid-to=XXX|" tmp/result/' . $args->{'dest'} );
+
     files_eq( 'data/example/' . $args->{'dest'}, 'tmp/result/' . $args->{'dest'}, 'smtp ' . $args->{'desc'} );
 
     return;
@@ -194,8 +197,8 @@ sub milter_process {
         'output'       => 'tmp/result/' . $args->{'dest'},
     });
 
-    system( 'sed -i -r "s|-valid-from=.*|-valid-from=XXX|" tmp/result/smime3.eml tmp/result/' . $args->{'dest'} );
-    system( 'sed -i -r "s|-valid-to=.*|-valid-to=XXX|" tmp/result/smime3.eml tmp/result/' . $args->{'dest'} );
+    system( 'sed -i -r "s|-valid-from=.*|-valid-from=XXX|" tmp/result/' . $args->{'dest'} );
+    system( 'sed -i -r "s|-valid-to=.*|-valid-to=XXX|" tmp/result/' . $args->{'dest'} );
 
     files_eq( 'data/example/' . $args->{'dest'}, 'tmp/result/' . $args->{'dest'}, 'milter ' . $args->{'desc'} );
 

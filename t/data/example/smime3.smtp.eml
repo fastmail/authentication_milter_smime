@@ -13,15 +13,15 @@ Authentication-Results: server.example.com;
         body.smime-part=2.TEXT
         body.smime-serial=187b1e207c1236fbd5bf90229d7f0e3f
         body.smime-issuer="C=IL,CN=StartCom Class 1 Client CA,O=StartCom Ltd.,OU=StartCom Certification Authority"
-        x-smime-valid-from="2016-02-19 09:49:24"
-        x-smime-valid-to="2017-02-19 09:49:24";
+        x-smime-valid-from=XXX
+        x-smime-valid-to=XXX
     x-smime-chain=info
         body.smime-part=2.TEXT
         x-smime-chain-identifier=null (StartCom Class 1 Client CA)
         x-smime-chain-serial=6ba78a7d0ad788d6510af959e4e7b4e1
         x-smime-chain-issuer="C=IL,CN=StartCom Certification Authority,O=StartCom Ltd.,OU=Secure Digital Certificate Signing"
-        x-smime-chain-valid-from="2015-12-16 12:00:05"
-        x-smime-chain-valid-to="2030-12-16 12:00:05"
+        x-smime-chain-valid-from=XXX
+        x-smime-chain-valid-to=XXX
 References: <56CA812E.10308@fastmail.com>
 Subject: SMIME Forward Test
 To: test2@example.com
