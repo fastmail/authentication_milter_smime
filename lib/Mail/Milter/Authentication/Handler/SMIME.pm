@@ -85,15 +85,26 @@ sub eom_callback {
 sub _parse_mime {
     my ( $self, $mime, $part_id ) = @_;
 
+    $part_id =~ s/TEXT\.// ;
+
     my $content_type = $mime->content_type();
     $self->{'thischild'}->loginfo( 'SMIME Parse Type ' . $content_type );
-    
+
     $content_type =~ s/;.*//;
 
     if ( $content_type eq 'multipart/signed' ) {
         my $header = $mime->{'header'}->as_string();
         my $body   = $mime->body_raw();
         $self->_check_mime( $header . "\r\n" . $body, $part_id );
+    }
+
+    if ( $content_type eq 'message/rfc822' ) {
+        my $new_part = $part_id;
+        if ( $new_part ne q{} ) {
+            $new_part .= '.';
+        }
+        my $parsed = Email::MIME->new( $mime->body_raw() );
+        $self->_parse_mime( $parsed, $new_part . 'TEXT' );
     }
 
     if ( $content_type eq 'application/pkcs7-mime' ) {

@@ -1,18 +1,46 @@
 Authentication-Results: test.module;
-    smime=fail
+    smime=pass
         body.smime-identifier=marc@marcbradshaw.net(marc@marcbradshaw.net)
-        body.smime-part=TEXT
+        body.smime-part=2.TEXT
         body.smime-serial=187b1e207c1236fbd5bf90229d7f0e3f
         body.smime-issuer="C=IL,CN=StartCom Class 1 Client CA,O=StartCom Ltd.,OU=StartCom Certification Authority"
         x-smime-valid-from=XXX
         x-smime-valid-to=XXX
     x-smime-chain=info
-        body.smime-part=TEXT
+        body.smime-part=2.TEXT
         x-smime-chain-identifier=null (StartCom Class 1 Client CA)
         x-smime-chain-serial=6ba78a7d0ad788d6510af959e4e7b4e1
         x-smime-chain-issuer="C=IL,CN=StartCom Certification Authority,O=StartCom Ltd.,OU=Secure Digital Certificate Signing"
         x-smime-chain-valid-from=XXX
         x-smime-chain-valid-to=XXX
+References: <56CA812E.10308@fastmail.com>
+Subject: SMIME Forward Test
+To: test2@example.com
+From: Marc Bradshaw <marc@fastmail.com>
+X-Forwarded-Message-Id: <56CA812E.10308@fastmail.com>
+Message-ID: <56CB9278.1090104@fastmail.com>
+Date: Tue, 23 Feb 2016 09:58:00 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101
+ Thunderbird/38.5.1
+MIME-Version: 1.0
+In-Reply-To: <56CA812E.10308@fastmail.com>
+Content-Type: multipart/mixed;
+ boundary="------------060706030404070802070003"
+
+This is a multi-part message in MIME format.
+--------------060706030404070802070003
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Unsigned Forwarded Signed Message
+
+--------------060706030404070802070003
+Content-Type: message/rfc822;
+ name="SMIME Testing.eml"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="SMIME Testing.eml"
+
 To: test@example.com
 From: Marc Bradshaw <marc@fastmail.com>
 Subject: SMIME Testing
@@ -31,9 +59,7 @@ Content-Transfer-Encoding: quoted-printable
 
 This is an SMIME Signed Message.
 
-It has been tampered with!
-
-It should NOT validate properly.
+It should validate properly until it's certificates expire.
 
 
 
@@ -120,4 +146,6 @@ rdthLJ2zGQh9EN0xjhcyO8WJeq9mWllNXFJiWX+t8/RIuj9l33CW2BdZop9Gv0fpGQaqcuWx
 3QGZpyQ9wFCSQ6ZJlZ67S3OdlbCIQMA323TdP53fNPk6aQISYoy9Uirv0vuZOPmrMC9ifWHK
 MwwAAAAAAAA=
 --------------ms040201030509010906060500--
+
+--------------060706030404070802070003--
 

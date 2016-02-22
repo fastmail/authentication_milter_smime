@@ -194,6 +194,9 @@ sub milter_process {
         'output'       => 'tmp/result/' . $args->{'dest'},
     });
 
+    system( 'sed -i -r "s|-valid-from=.*|-valid-from=XXX|" tmp/result/smime3.eml tmp/result/' . $args->{'dest'} );
+    system( 'sed -i -r "s|-valid-to=.*|-valid-to=XXX|" tmp/result/smime3.eml tmp/result/' . $args->{'dest'} );
+
     files_eq( 'data/example/' . $args->{'dest'}, 'tmp/result/' . $args->{'dest'}, 'milter ' . $args->{'desc'} );
 
     return;
@@ -204,7 +207,7 @@ sub run_milter_processing_smime {
     start_milter( 'config/smime' );
 
     milter_process({
-        'desc'   => 'Smime',
+        'desc'   => 'Smime pass',
         'prefix' => 'config/smime',
         'source' => 'smime.eml',
         'dest'   => 'smime.eml',
@@ -215,10 +218,21 @@ sub run_milter_processing_smime {
     });
 
     milter_process({
-        'desc'   => 'Smime',
+        'desc'   => 'Smime fail',
         'prefix' => 'config/smime',
         'source' => 'smime2.eml',
         'dest'   => 'smime2.eml',
+        'ip'     => '74.125.82.171',
+        'name'   => 'mail-we0-f171.google.com',
+        'from'   => 'marc@marcbradshaw.net',
+        'to'     => 'marc@fastmail.com',
+    });
+
+    milter_process({
+        'desc'   => 'Smime forward',
+        'prefix' => 'config/smime',
+        'source' => 'smime3.eml',
+        'dest'   => 'smime3.eml',
         'ip'     => '74.125.82.171',
         'name'   => 'mail-we0-f171.google.com',
         'from'   => 'marc@marcbradshaw.net',
@@ -235,7 +249,7 @@ sub run_smtp_processing_smime {
     start_milter( 'config/smime.smtp' );
 
     smtp_process({
-        'desc'   => 'Smime',
+        'desc'   => 'Smime pass',
         'prefix' => 'config/smime.smtp',
         'source' => 'smime.eml',
         'dest'   => 'smime.smtp.eml',
@@ -246,10 +260,21 @@ sub run_smtp_processing_smime {
     });
 
     smtp_process({
-        'desc'   => 'Smime',
+        'desc'   => 'Smime fail',
         'prefix' => 'config/smime.smtp',
         'source' => 'smime2.eml',
         'dest'   => 'smime2.smtp.eml',
+        'ip'     => '74.125.82.171',
+        'name'   => 'mail-we0-f171.google.com',
+        'from'   => 'marc@marcbradshaw.net',
+        'to'     => 'marc@fastmail.com',
+    });
+
+    smtp_process({
+        'desc'   => 'Smime forward',
+        'prefix' => 'config/smime.smtp',
+        'source' => 'smime3.eml',
+        'dest'   => 'smime3.smtp.eml',
         'ip'     => '74.125.82.171',
         'name'   => 'mail-we0-f171.google.com',
         'from'   => 'marc@marcbradshaw.net',
