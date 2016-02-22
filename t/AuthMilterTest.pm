@@ -217,8 +217,8 @@ sub run_milter_processing_smime {
     milter_process({
         'desc'   => 'Smime',
         'prefix' => 'config/smime',
-        'source' => 'smime3.eml',
-        'dest'   => 'smime3.eml',
+        'source' => 'smime2.eml',
+        'dest'   => 'smime2.eml',
         'ip'     => '74.125.82.171',
         'name'   => 'mail-we0-f171.google.com',
         'from'   => 'marc@marcbradshaw.net',
@@ -248,8 +248,8 @@ sub run_smtp_processing_smime {
     smtp_process({
         'desc'   => 'Smime',
         'prefix' => 'config/smime.smtp',
-        'source' => 'smime3.eml',
-        'dest'   => 'smime3.smtp.eml',
+        'source' => 'smime2.eml',
+        'dest'   => 'smime2.smtp.eml',
         'ip'     => '74.125.82.171',
         'name'   => 'mail-we0-f171.google.com',
         'from'   => 'marc@marcbradshaw.net',
