@@ -56,7 +56,7 @@ sub eom_callback {
 
     eval {
         my $parsed = Email::MIME->new( $data );
-        $self->_parse_mime( $parsed );
+        $self->_parse_mime( $parsed, q{} );
 
         if ( $self->{'found'} == 0 ) {
             if ( !( $config->{'hide_none'} ) ) {
@@ -83,7 +83,7 @@ sub eom_callback {
 
 
 sub _parse_mime {
-    my ( $self, $mime ) = @_;
+    my ( $self, $mime, $part_id ) = @_;
 
     my $content_type = $mime->content_type();
     $self->{'thischild'}->loginfo( 'SMIME Parse Type ' . $content_type );
@@ -93,21 +93,26 @@ sub _parse_mime {
     if ( $content_type eq 'multipart/signed' ) {
         my $header = $mime->{'header'}->as_string();
         my $body   = $mime->body_raw();
-        $self->_check_mime( $header . "\r\n" . $body );
+        $self->_check_mime( $header . "\r\n" . $body, $part_id );
     }
 
     if ( $content_type eq 'application/pkcs7-mime' ) {
         # See rfc5751 3.4
         my $header = $mime->{'header'}->as_string();
         my $body   = $mime->body_raw();
-        $self->_check_mime( $header . "\r\n" . $body );
+        $self->_check_mime( $header . "\r\n" . $body, $part_id );
     }
 
     my @parts = $mime->subparts();
     $self->{'thischild'}->loginfo( 'SMIME Has Subparts ' . scalar @parts );
 
+    my $i = 1;
+    my $new_part = $part_id;
+    if ( $new_part ne q{} ) {
+        $new_part .= '.';
+    }
     foreach my $part ( @parts ) {
-        $self->_parse_mime( $part );
+        $self->_parse_mime( $part, $new_part . $i++ );
     }
 
 }
@@ -121,7 +126,11 @@ sub close_callback {
 }
 
 sub _check_mime {
-    my ( $self, $data ) = @_;
+    my ( $self, $data, $part_id ) = @_;
+
+    if ( $part_id eq q{} ) {
+        $part_id = 'TEXT';
+    }
 
     $self->{'found'} = 1;
 
@@ -145,7 +154,7 @@ sub _check_mime {
             $self->log_error( 'SMIME check Error ' . $error );
             my $signatures = Crypt::SMIME::getSigners( $data );
             my $all_certs  = Crypt::SMIME::extractCertificates( $data );
-            $self->_decode_certs( 'fail', $signatures, $all_certs );
+            $self->_decode_certs( 'fail', $signatures, $all_certs, $part_id );
             ## ToDo extract the reason for failure and add as header comment
             if ( $self->{'added'} == 0 ) {
                 $self->add_auth_header(
@@ -157,14 +166,14 @@ sub _check_mime {
         else {
             my $signatures = Crypt::SMIME::getSigners( $data );
             my $all_certs  = Crypt::SMIME::extractCertificates( $data );
-            $self->_decode_certs( 'pass', $signatures, $all_certs );
+            $self->_decode_certs( 'pass', $signatures, $all_certs, $part_id );
         }
     }
 
 }
 
 sub _decode_certs {
-    my ( $self, $passfail, $signatures, $all_certs ) = @_;
+    my ( $self, $passfail, $signatures, $all_certs, $part_id ) = @_;
 
     my $seen = {};
 
@@ -187,10 +196,9 @@ sub _decode_certs {
         $seen->{ $serial } = 1;
 
         my @results;
-        ## ToDo identify part
-        ##$data->{ 'body.smime-part' }       = ???;
         push @results, $self->format_header_entry( 'body.smime-identifier', $subject->{'E'}[0] )
             . '(' . $self->format_header_comment( $subject->{'CN'}[0] ) . ')';
+        push @results, $self->format_header_entry( 'body.smime-part', $part_id );
         push @results, $self->format_header_entry( 'body.smime-serial', $serial );
         my $issuer_text = join( ',', map{ $_ . '=' . $issuer->{$_}[0] } sort keys (%{$issuer}) );
         $issuer_text =~ s/\"/ /g;
@@ -224,8 +232,7 @@ sub _decode_certs {
         $seen->{ $serial } = 1;
 
         my @results;
-        ## ToDo identify part
-        #$data->{ 'smime-part' }       = ???;
+        push @results, $self->format_header_entry( 'body.smime-part', $part_id );
         push @results, $self->format_header_entry( 'x-smime-chain-identifier', ( $subject->{'E'}[0] || 'null' ) )
             . ' (' . $self->format_header_comment( $subject->{'CN'}[0] ) . ')';
         push @results, $self->format_header_entry( 'x-smime-chain-serial', $serial );
