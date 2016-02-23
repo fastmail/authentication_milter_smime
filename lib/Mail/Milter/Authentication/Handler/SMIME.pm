@@ -109,7 +109,7 @@ sub _parse_mime {
 
     if ( $content_type eq 'multipart/signed' ) {
         $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
-        $self->{'thischild'}->loginfo( 'Protocol ' . $protocol );
+        $self->{'thischild'}->loginfo( 'SMIME Protocol ' . $protocol );
         if ( $protocol eq 'application/pkcs7-signature' || $protocol eq q{} ) {
             my $header = $mime->{'header'}->as_string();
             my $body   = $mime->body_raw();
@@ -119,7 +119,7 @@ sub _parse_mime {
 
     if ( $content_type eq 'application/pkcs7-mime' && $protocol eq 'application/pkcs7-signature' ) {
         $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
-        $self->{'thischild'}->loginfo( 'Protocol ' . $protocol );
+        $self->{'thischild'}->loginfo( 'SMIME Protocol ' . $protocol );
         if ( $protocol eq 'application/pkcs7-signature' || $protocol eq q{} ) {
             # See rfc5751 3.4
             my $header = $mime->{'header'}->as_string();
