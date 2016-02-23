@@ -93,6 +93,7 @@ sub _parse_mime {
     $content_type =~ s/;.*//;
 
     if ( $content_type eq 'multipart/signed' ) {
+        $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
         my $header = $mime->{'header'}->as_string();
         my $body   = $mime->body_raw();
         $self->_check_mime( $header . "\r\n" . $body, $part_id );
@@ -108,6 +109,7 @@ sub _parse_mime {
     }
 
     if ( $content_type eq 'application/pkcs7-mime' ) {
+        $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
         # See rfc5751 3.4
         my $header = $mime->{'header'}->as_string();
         my $body   = $mime->body_raw();
