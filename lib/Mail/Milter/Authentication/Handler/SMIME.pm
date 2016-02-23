@@ -90,14 +90,13 @@ sub _parse_mime {
     my $content_type = $mime->content_type() || q{};
     #$self->{'thischild'}->loginfo( 'SMIME Parse Type ' . $content_type );
 
-    $content_type =~ s/;.*//;
-
-    if ( $content_type eq 'multipart/signed' ) {
-        $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
-        my $header = $mime->{'header'}->as_string();
-        my $body   = $mime->body_raw();
-        $self->_check_mime( $header . "\r\n" . $body, $part_id );
+    my $protocol = q{};
+    if ( $content_type =~ /protocol=.*;/ ) {
+        ( $protocol ) = $content_type =~ /protocol=([^;]*);/;
+        $protocol =~ s/"//g;
     }
+
+    $content_type =~ s/;.*//;
 
     if ( $content_type eq 'message/rfc822' ) {
         my $new_part = $part_id;
@@ -108,12 +107,25 @@ sub _parse_mime {
         $self->_parse_mime( $parsed, $new_part . 'TEXT' );
     }
 
-    if ( $content_type eq 'application/pkcs7-mime' ) {
+    if ( $content_type eq 'multipart/signed' ) {
         $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
-        # See rfc5751 3.4
-        my $header = $mime->{'header'}->as_string();
-        my $body   = $mime->body_raw();
-        $self->_check_mime( $header . "\r\n" . $body, $part_id );
+        $self->{'thischild'}->loginfo( 'Protocol ' . $protocol );
+        if ( $protocol eq 'application/pkcs7-signature' || $protocol eq q{} ) {
+            my $header = $mime->{'header'}->as_string();
+            my $body   = $mime->body_raw();
+            $self->_check_mime( $header . "\r\n" . $body, $part_id );
+        }
+    }
+
+    if ( $content_type eq 'application/pkcs7-mime' && $protocol eq 'application/pkcs7-signature' ) {
+        $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
+        $self->{'thischild'}->loginfo( 'Protocol ' . $protocol );
+        if ( $protocol eq 'application/pkcs7-signature' || $protocol eq q{} ) {
+            # See rfc5751 3.4
+            my $header = $mime->{'header'}->as_string();
+            my $body   = $mime->body_raw();
+            $self->_check_mime( $header . "\r\n" . $body, $part_id );
+        }
     }
 
     my @parts = $mime->subparts();
