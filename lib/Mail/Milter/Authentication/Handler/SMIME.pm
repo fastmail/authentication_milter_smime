@@ -87,8 +87,8 @@ sub _parse_mime {
 
     $part_id =~ s/TEXT\.// ;
 
-    my $content_type = $mime->content_type();
-    $self->{'thischild'}->loginfo( 'SMIME Parse Type ' . $content_type );
+    my $content_type = $mime->content_type() || q{};
+    #$self->{'thischild'}->loginfo( 'SMIME Parse Type ' . $content_type );
 
     $content_type =~ s/;.*//;
 
@@ -115,7 +115,7 @@ sub _parse_mime {
     }
 
     my @parts = $mime->subparts();
-    $self->{'thischild'}->loginfo( 'SMIME Has Subparts ' . scalar @parts );
+    #$self->{'thischild'}->loginfo( 'SMIME Has Subparts ' . scalar @parts );
 
     my $i = 1;
     my $new_part = $part_id;
