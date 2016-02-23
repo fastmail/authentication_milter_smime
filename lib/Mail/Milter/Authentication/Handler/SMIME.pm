@@ -91,7 +91,7 @@ sub _parse_mime {
     #$self->{'thischild'}->loginfo( 'SMIME Parse Type ' . $content_type );
 
     my $protocol = q{};
-    if ( $content_type =~ /protocol=.*;/ ) {
+    if ( $content_type . ';' =~ /protocol=.*;/ ) {
         ( $protocol ) = $content_type =~ /protocol=([^;]*);/;
         $protocol =~ s/"//g;
     }
