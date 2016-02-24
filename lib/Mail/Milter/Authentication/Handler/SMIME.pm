@@ -177,6 +177,17 @@ sub _check_mime {
         };
         if ( my $error = $@ ) {
             $self->log_error( 'SMIME check Error ' . $error );
+
+            eval {
+                $source = $smime->check( $data, Crypt::SMIME::NO_CHECK_CERTIFICATE );
+            }
+            if ( my $error2 = $@ ) {
+                $self->log_error( 'SMIME check (no_check_certificate) Error ' . $error2 );
+            }
+            else {
+                $self->log_error( 'SMIME check succeeded with no_check_certificate option' );
+            }
+
             my $signatures = Crypt::SMIME::getSigners( $data );
             my $all_certs  = Crypt::SMIME::extractCertificates( $data );
             $self->_decode_certs( 'fail', $signatures, $all_certs, $part_id );

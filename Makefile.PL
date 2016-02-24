@@ -37,7 +37,7 @@ build_requires (
 
 requires (
     'Convert::X509' => 0,
-    'Crypt::SMIME'  => 0.15,
+    'Crypt::SMIME'  => 0.16,
     'Email::MIME'   => 0,
     'Mail::Milter::Authentication' => 0,
 );
