@@ -13,7 +13,7 @@ if ( ! -e 't/01-smime.t' ) {
 
 chdir 't';
 
-plan tests => 6;
+plan tests => 8;
 
 {
     system 'rm -rf tmp';

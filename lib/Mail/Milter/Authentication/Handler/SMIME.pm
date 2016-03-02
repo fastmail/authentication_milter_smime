@@ -96,6 +96,12 @@ sub _parse_mime {
         $protocol =~ s/"//g;
     }
 
+    my $smime_type = q{};
+    if ( $content_type . ';' =~ /smime-type=.*;/ ) {
+        ( $smime_type ) = $content_type =~ /smime-type=([^;]*);/;
+        $smime_type =~ s/"//g;
+    }
+
     $content_type =~ s/;.*//;
 
     if ( $content_type eq 'message/rfc822' ) {
@@ -119,8 +125,8 @@ sub _parse_mime {
 
     if ( $content_type eq 'application/pkcs7-mime' ) {
         $self->{'thischild'}->loginfo( 'SMIME found ' . $content_type );
-        $self->{'thischild'}->loginfo( 'SMIME Protocol ' . $protocol );
-        if ( $protocol eq 'application/pkcs7-signature' || $protocol eq 'application/x-pkcs7-signature' || $protocol eq q{} ) {
+        $self->{'thischild'}->loginfo( 'SMIME Type ' . $smime_type );
+        if ( $smime_type eq 'signed-data' || $smime_type eq q{} ) {
             # See rfc5751 3.4
             my $header = $mime->{'header'}->as_string();
             my $body   = $mime->body_raw();
