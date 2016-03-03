@@ -93,13 +93,13 @@ sub _parse_mime {
     my $protocol = q{};
     if ( $content_type . ';' =~ /protocol=.*;/ ) {
         ( $protocol ) = $content_type =~ /protocol=([^;]*);/;
-        $protocol =~ s/"//g;
+        $protocol =~ s/"//g if $protocol;
     }
 
     my $smime_type = q{};
     if ( $content_type . ';' =~ /smime-type=.*;/ ) {
         ( $smime_type ) = $content_type =~ /smime-type=([^;]*);/;
-        $smime_type =~ s/"//g;
+        $smime_type =~ s/"//g if $smime_type;
     }
 
     $content_type =~ s/;.*//;
