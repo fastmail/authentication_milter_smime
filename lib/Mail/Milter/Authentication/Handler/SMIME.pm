@@ -146,6 +146,7 @@ sub _parse_mime {
         $self->_parse_mime( $part, $new_part . $i++ );
     }
 
+    return;
 }
 
 sub close_callback {
@@ -201,6 +202,7 @@ sub _check_mime {
         }
     }
 
+    return;
 }
 
 sub _decode_certs {
