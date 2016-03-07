@@ -3,7 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use inc::Module::Install;
 
-name     'Mail-Milter-Authentication-SMIME';
+name     'Mail-Milter-Authentication-Handler-SMIME';
 all_from 'lib/Mail/Milter/Authentication/Handler/SMIME.pm';
 author   q{Marc Bradshaw <marc@marcbradshaw.net>};
 license  'perl';
