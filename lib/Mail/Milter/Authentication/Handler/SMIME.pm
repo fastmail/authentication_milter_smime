@@ -286,3 +286,44 @@ sub _decode_certs {
 
 1;
 
+__END__
+
+=head1 NAME
+
+  Authentication Milter - SMIME Module
+
+=head1 DESCRIPTION
+
+Check SMIME signed email for validity.
+
+=head1 CONFIGURATION
+
+        "SMIME" : {
+            "hide_none" : 0,
+            "pki_store" : "/etc/ssl/certs"
+        },
+
+=head1 SYNOPSIS
+
+=head2 CONFIG
+
+Add a block to the handlers section of your config as follows.
+
+        "SMIME" : {
+            "hide_none"         : 0,                    | Hide auth line if the result is 'none'
+            "pki_store"         : "/etc/ssl/certs"      | The location of your trusted root certs
+        },
+
+=head1 AUTHORS
+
+Marc Bradshaw E<lt>marc@marcbradshaw.netE<gt>
+
+=head1 COPYRIGHT
+
+Copyright 2016
+
+This library is free software; you may redistribute it and/or
+modify it under the same terms as Perl itself.
+
+
+
