@@ -88,6 +88,8 @@ sub eom_callback {
         $self->{'metric_result'} = 'error';
     }
 
+    $self->metric_count( 'smime_total', { 'result' => $self->{'metric_result'} } );
+
     return;
 }
 
@@ -161,7 +163,6 @@ sub _parse_mime {
 
 sub close_callback {
     my ( $self ) = @_;
-    $self->metric_count( 'smime_total', { 'result' => $self->{'metric_result'} } );
     delete $self->{'metric_result'};
     delete $self->{'added'};
     delete $self->{'found'};
