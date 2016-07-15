@@ -18,11 +18,18 @@ sub default_config {
    };
 }
 
+sub register_metrics {
+    return {
+        'smime_total' => 'The number of emails processed for SMIME',
+    };
+}
+
 sub envfrom_callback {
     my ($self) = @_;
     $self->{'data'}  = [];
     $self->{'found'} = 0;
     $self->{'added'} = 0;
+    $self->{'metric_result'} = 'unknown';
     return;
 }
 
@@ -64,11 +71,13 @@ sub eom_callback {
                     $self->format_header_entry( 'smime', 'none' ),
                 );
             }
+            $self->{'metric_result'} = 'none';
         }
         elsif ( $self->{'added'} == 0 ) {
             $self->add_auth_header(
                 $self->format_header_entry( 'smime', 'temperror' ),
             );
+            $self->{'metric_result'} = 'error';
         }
     };
     if ( my $error = $@ ) {
@@ -76,6 +85,7 @@ sub eom_callback {
         $self->add_auth_header(
             $self->format_header_entry( 'smime', 'temperror' ),
         );
+        $self->{'metric_result'} = 'error';
     }
 
     return;
@@ -151,6 +161,8 @@ sub _parse_mime {
 
 sub close_callback {
     my ( $self ) = @_;
+    $self->metric_count( 'smime_total', { 'result' => $self->{'metric_result'} } );
+    delete $self->{'metric_result'};
     delete $self->{'added'};
     delete $self->{'found'};
     delete $self->{'data'};
@@ -192,6 +204,7 @@ sub _check_mime {
                 $self->add_auth_header(
                     $self->format_header_entry( 'smime', 'fail' ),
                 );
+                $self->{'metric_result'} = 'fail';
                 $self->{'added'} = 1;
             }
         }
@@ -244,6 +257,7 @@ sub _decode_certs {
                 @results,
             )
         );
+        $self->{'metric_result'} = $passfail;
         $self->{'added'} = 1;
     }
 
