@@ -39,6 +39,3 @@ t/pki_store/certs/servers/test.example.com/fullchain.pem
 t/pki_store/certs/servers/test.example.com/privkey.pem
 t/pki_store/certs/servers/test.example.com/server.pem
 t/pki_store/make.sh
-t/pki_store/smime2.eml
-t/pki_store/smime3.eml
-t/pki_store/smime.eml
