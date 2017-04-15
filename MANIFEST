@@ -29,3 +29,16 @@ t/dev-critic.t
 t/dev-manifest.t
 t/dev-pod.t
 t/perlcriticrc
+t/pki_store/ca/4b148d17.0
+t/pki_store/certs/ca/my-root-ca.crt.pem
+t/pki_store/certs/ca/my-root-ca.key.pem
+t/pki_store/certs/ca/my-root-ca.srl
+t/pki_store/certs/servers/test.example.com/cert.pem
+t/pki_store/certs/servers/test.example.com/chain.pem
+t/pki_store/certs/servers/test.example.com/fullchain.pem
+t/pki_store/certs/servers/test.example.com/privkey.pem
+t/pki_store/certs/servers/test.example.com/server.pem
+t/pki_store/make.sh
+t/pki_store/smime2.eml
+t/pki_store/smime3.eml
+t/pki_store/smime.eml
