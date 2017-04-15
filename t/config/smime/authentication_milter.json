@@ -23,7 +23,7 @@
 
     "handlers" : {
         "SMIME" : {
-            "pki_store" : "/etc/ssl/certs"
+            "pki_store" : "pki_store/ca/"
         }
     }
 }
