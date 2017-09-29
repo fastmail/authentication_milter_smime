@@ -21,7 +21,7 @@ sub default_config {
 sub grafana_rows {
     my ( $self ) = @_;
     my @rows;
-    push @rows , '{"title":"SMIME Handler","repeat":null,"titleSize":"h6","repeatRowId":null,"height":"250px","showTitle":true,"collapse":true,"repeatIteration":null,"panels":[{"renderer":"flot","tooltip":{"msResolution":false,"sort":2,"shared":true,"value_type":"cumulative"},"lines":true,"id":21,"grid":{},"xaxis":{"values":[],"show":true,"name":null,"mode":"time"},"error":false,"seriesOverrides":[],"targets":[{"legendFormat":"{{ result }}","expr":"sum(rate(authmilter_smime_total{node=~\"$node\"}[$ratetime])) by(result)","refId":"A","intervalFactor":2,"step":4}],"pointradius":5,"links":[],"thresholds":[],"fill":1,"title":"SMIME results rate","yaxes":[{"min":null,"logBase":1,"format":"short","label":null,"max":null,"show":true},{"show":true,"format":"short","label":null,"max":null,"min":null,"logBase":1}],"nullPointMode":"connected","aliasColors":{},"timeShift":null,"span":12,"linewidth":2,"editable":true,"legend":{"show":true,"hideZero":true,"max":false,"current":false,"avg":false,"min":false,"total":false,"values":false,"hideEmpty":false},"points":false,"datasource":"${DS_PROMETHEUS}","timeFrom":null,"bars":false,"steppedLine":false,"percentage":false,"type":"graph","stack":false}]}';
+    push @rows, $self->get_json( 'SMIME_metrics' );
     return \@rows;
 }
 
