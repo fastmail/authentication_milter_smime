@@ -263,7 +263,7 @@ sub _decode_certs {
         $issuer_text =~ s/\"/ /g;
 
         $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-issuer' )->safe_set_value( $issuer_text ) );
-        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-valie-from' )->safe_set_value( $from ) );
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-valid-from' )->safe_set_value( $from ) );
         $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-valid-to' )->safe_set_value( $to ) );
 
         $self->add_auth_header($header);
