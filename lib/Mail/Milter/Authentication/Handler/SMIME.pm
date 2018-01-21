@@ -230,7 +230,6 @@ sub _decode_certs {
 
     my $seen = {};
 
-
     SIGNATURE:
     foreach my $cert ( @{$signatures} ) {
 
@@ -252,8 +251,6 @@ sub _decode_certs {
         $seen->{ $serial } = 1;
 
         my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->safe_set_value( $passfail );
-        $header->add_child( Mail::AuthenticationResults::Header::Comment->new()->safe_set_value( $result_comment . $key_data ) );
-        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'header.d' )->safe_set_value( $signature->domain() ) );
 
         my $header_id = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-identifier' )->safe_set_value( $subject->{'E'}[0] );
         $header_id->add_child( Mail::AuthenticationResults::Header::Comment->new()->safe_set_value( $subject->{'CN'}[0] ) );
