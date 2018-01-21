@@ -6,6 +6,9 @@ use version; our $VERSION = version->declare('v1.1.7');
 
 use English qw{ -no_match_vars };
 use Sys::Syslog qw{:standard :macros};
+use Mail::AuthenticationResults::Header::Entry;
+use Mail::AuthenticationResults::Header::SubEntry;
+use Mail::AuthenticationResults::Header::Comment;
 
 use Convert::X509;
 use Crypt::SMIME;
@@ -74,24 +77,21 @@ sub eom_callback {
 
         if ( $self->{'found'} == 0 ) {
             if ( !( $config->{'hide_none'} ) ) {
-                $self->add_auth_header(
-                    $self->format_header_entry( 'smime', 'none' ),
-                );
+                my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->set_value( 'none' );
+                $self->add_auth_header( $header );
             }
             $self->{'metric_result'} = 'none';
         }
         elsif ( $self->{'added'} == 0 ) {
-            $self->add_auth_header(
-                $self->format_header_entry( 'smime', 'temperror' ),
-            );
+            my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->set_value( 'temperror' );
+            $self->add_auth_header( $header );
             $self->{'metric_result'} = 'error';
         }
     };
     if ( my $error = $@ ) {
         $self->log_error( 'SMIME Execution Error ' . $error );
-        $self->add_auth_header(
-            $self->format_header_entry( 'smime', 'temperror' ),
-        );
+        my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->set_value( 'temperror' );
+        $self->add_auth_header( $header );
         $self->{'metric_result'} = 'error';
     }
 
@@ -209,9 +209,8 @@ sub _check_mime {
             $self->_decode_certs( 'fail', $signatures, $all_certs, $part_id );
             ## ToDo extract the reason for failure and add as header comment
             if ( $self->{'added'} == 0 ) {
-                $self->add_auth_header(
-                    $self->format_header_entry( 'smime', 'fail' ),
-                );
+                my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->set_value( 'fail' );
+                $self->add_auth_header( $header );
                 $self->{'metric_result'} = 'fail';
                 $self->{'added'} = 1;
             }
@@ -252,22 +251,26 @@ sub _decode_certs {
         next SIGNATURE if $seen->{ $serial };
         $seen->{ $serial } = 1;
 
-        my @results;
-        push @results, $self->format_header_entry( 'body.smime-identifier', $subject->{'E'}[0] )
-            . '(' . $self->format_header_comment( $subject->{'CN'}[0] ) . ')';
-        push @results, $self->format_header_entry( 'body.smime-part', $part_id );
-        push @results, $self->format_header_entry( 'body.smime-serial', $serial );
+        my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->safe_set_value( $passfail );
+        $header->add_child( Mail::AuthenticationResults::Header::Comment->new()->safe_set_value( $result_comment . $key_data ) );
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'header.d' )->safe_set_value( $signature->domain() ) );
+
+        my $header_id = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-identifier' )->safe_set_value( $subject->{'E'}[0] );
+        $header_id->add_child( Mail::AuthenticationResults::Header::Comment->new()->safe_set_value( $subject->{'CN'}[0] ) );
+        $header->add_child( $header_id );
+
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-part' )->safe_set_value( $part_id ) );
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-serial' )->safe_set_value( $serial ) );
+
         my $issuer_text = join( ',', map{ $_ . '=' . $issuer->{$_}[0] } sort keys (%{$issuer}) );
         $issuer_text =~ s/\"/ /g;
-        push @results, 'body.smime-issuer="' . $self->format_ctext( $issuer_text ) . '"' ;
-        push @results, 'x-smime-valid-from="' . $self->format_ctext( $from ) . '"';
-        push @results, 'x-smime-valid-to="'   . $self->format_ctext( $to ) . '"';
-        $self->add_auth_header(
-            join( "\n        ",
-                $self->format_header_entry( 'smime', $passfail ),
-                @results,
-            )
-        );
+
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-issuer' )->safe_set_value( $issuer_text ) );
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-valie-from' )->safe_set_value( $from ) );
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-valid-to' )->safe_set_value( $to ) );
+
+        $self->add_auth_header($header);
+
         $self->{'metric_result'} = $passfail;
         $self->{'added'} = 1;
     }
