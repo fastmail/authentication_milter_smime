@@ -292,23 +292,20 @@ sub _decode_certs {
         next CERT if $seen->{ $serial };
         $seen->{ $serial } = 1;
 
-        my @results;
-        push @results, $self->format_header_entry( 'body.smime-part', $part_id );
-        push @results, $self->format_header_entry( 'x-smime-chain-identifier', ( $subject->{'E'}[0] || 'null' ) )
-            . ' (' . $self->format_header_comment( $subject->{'CN'}[0] ) . ')';
-        push @results, $self->format_header_entry( 'x-smime-chain-serial', $serial );
+        my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'x-smime-chain' )->safe_set_value( 'info' );
+
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-part' )->safe_set_value( $part_id ) );
+        my $chain_id = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-identifier' )->safe_set_value( $subject->{'E'}[0] || 'null' );
+        $chain_id->add_child( Mail::AuthenticationResults::Header:Comment->new()->safe_set_value( $subject->{'CN'}[0] || 'null' ) );
+        $header->add_child( $chain_id )
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-serial' )->safe_set_value( $serial ) );
         my $issuer_text = join( ',', map{ $_ . '=' . $issuer->{$_}[0] } sort keys (%{$issuer}) );
         $issuer_text =~ s/\"/ /g;
-        push @results, 'x-smime-chain-issuer="' . $self->format_ctext( $issuer_text ) . '"' ;
-        push @results, 'x-smime-chain-valid-from="' . $self->format_ctext( $from ) . '"';
-        push @results, 'x-smime-chain-valid-to="'   . $self->format_ctext( $to ) . '"';
-                $self->add_auth_header(
-                    join( "\n        ",
-                        $self->format_header_entry( 'x-smime-chain', 'info' ),
-                        @results,
-                    )
-                );
-                $self->{'added'} = 1;
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-issuer' )->safe_set_value( $issuer_text ) );
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-valid-from' )->safe_set_value( $from ) );
+        $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-valid-to' )->safe_set_value( $to ) );
+        $self->add_auth_header( $header );
+        $self->{'added'} = 1;
     }
 
     return;
