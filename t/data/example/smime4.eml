@@ -1,11 +1,5 @@
 Authentication-Results: test.module;
-    smime=fail
-        body.smime-identifier=(AliceDSS)
-        body.smime-part=TEXT
-        body.smime-serial=c8
-        body.smime-issuer="CN=CarlDSS"
-        x-smime-valid-from="TEST"
-        x-smime-valid-to="TEST"
+    smime=fail body.smime-identifier="" (AliceDSS) body.smime-part=TEXT body.smime-serial=c8 body.smime-issuer="CN=CarlDSS" x-smime-valid-from=TEST x-smime-valid-to=TEST
 MIME-Version: 1.0
 To: User2@examples.com
 From: aliceDss@examples.com
