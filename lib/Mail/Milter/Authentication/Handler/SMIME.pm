@@ -295,9 +295,13 @@ sub _decode_certs {
         my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'x-smime-chain' )->safe_set_value( 'info' );
 
         $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'body.smime-part' )->safe_set_value( $part_id ) );
-        my $chain_id = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-identifier' )->safe_set_value( $subject->{'E'}[0] || 'null' );
-        $chain_id->add_child( Mail::AuthenticationResults::Header:Comment->new()->safe_set_value( $subject->{'CN'}[0] || 'null' ) );
-        $header->add_child( $chain_id )
+        my $chain_id_value = $subject->{'E'}[0];
+        my $chain_id_comment = $subject->{'CN'}[0];
+        $chain_id_value = 'null' if ! defined $chain_id_value;
+        $chain_id_comment = 'null' if ! defined $chain_id_comment;
+        my $chain_id = Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-identifier' )->safe_set_value( $chain_id_value ); 
+        $chain_id->add_child( Mail::AuthenticationResults::Header::Comment->new()->safe_set_value( $chain_id_comment ) );
+        $header->add_child( $chain_id );
         $header->add_child( Mail::AuthenticationResults::Header::SubEntry->new()->set_key( 'x-smime-chain-serial' )->safe_set_value( $serial ) );
         my $issuer_text = join( ',', map{ $_ . '=' . $issuer->{$_}[0] } sort keys (%{$issuer}) );
         $issuer_text =~ s/\"/ /g;
