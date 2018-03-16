@@ -1,9 +1,10 @@
 package Mail::Milter::Authentication::Handler::SMIME;
 use strict;
 use warnings;
+use Mail::Milter::Authentication 2;
 use base 'Mail::Milter::Authentication::Handler';
-use version; our $VERSION = version->declare('v1.1.7');
-
+# VERSION
+# ABSTRACT: Authentication Milter Module for validation of SMIME
 use English qw{ -no_match_vars };
 use Sys::Syslog qw{:standard :macros};
 use Mail::AuthenticationResults::Header::Entry;
@@ -319,10 +320,6 @@ sub _decode_certs {
 
 __END__
 
-=head1 NAME
-
-  Authentication Milter - SMIME Module
-
 =head1 DESCRIPTION
 
 Check SMIME signed email for validity.
@@ -334,8 +331,6 @@ Check SMIME signed email for validity.
             "pki_store" : "/etc/ssl/certs"
         },
 
-=head1 SYNOPSIS
-
 =head2 CONFIG
 
 Add a block to the handlers section of your config as follows.
@@ -344,17 +339,4 @@ Add a block to the handlers section of your config as follows.
             "hide_none"         : 0,                    | Hide auth line if the result is 'none'
             "pki_store"         : "/etc/ssl/certs"      | The location of your trusted root certs
         },
-
-=head1 AUTHORS
-
-Marc Bradshaw E<lt>marc@marcbradshaw.netE<gt>
-
-=head1 COPYRIGHT
-
-Copyright 2017
-
-This library is free software; you may redistribute it and/or
-modify it under the same terms as Perl itself.
-
-
 
