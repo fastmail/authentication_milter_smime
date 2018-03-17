@@ -1,5 +1,8 @@
 Revision history for Mail-Milter-Authentication-Smime
 
+{{$NEXT}}
+        - Pass headers as objects
+
 1.1.7   2017-12-31
         - Updated manifest
 
