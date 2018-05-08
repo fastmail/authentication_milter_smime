@@ -115,6 +115,7 @@ sub _parse_mime {
         ( $protocol ) = $content_type =~ /protocol=([^;]*);/;
         $protocol =~ s/"//g if $protocol;
     }
+    $protocol = q{} if ! defined $protocol;
 
     my $smime_type = q{};
     if ( $content_type . ';' =~ /smime-type=.*;/ ) {
