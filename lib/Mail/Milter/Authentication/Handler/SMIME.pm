@@ -91,6 +91,7 @@ sub eom_callback {
     };
     if ( my $error = $@ ) {
         $self->log_error( 'SMIME Execution Error ' . $error );
+        die $error if $error =~ /Timeout/;
         my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->set_value( 'temperror' );
         $self->add_auth_header( $header );
         $self->{'metric_result'} = 'error';
@@ -196,6 +197,7 @@ sub _check_mime {
     $is_signed = eval{ $smime->isSigned( $data ); };
     if ( my $error = $@ ) {
         $self->log_error( 'SMIME isSigned Error ' . $error );
+        die $error if $error =~ /Timeout/;
     }
 
     if ( $is_signed ) {
@@ -206,6 +208,7 @@ sub _check_mime {
         };
         if ( my $error = $@ ) {
             $self->log_error( 'SMIME check Error ' . $error );
+            die $error if $error =~ /Timeout/;
             my $signatures = Crypt::SMIME::getSigners( $data );
             my $all_certs  = Crypt::SMIME::extractCertificates( $data );
             $self->_decode_certs( 'fail', $signatures, $all_certs, $part_id );
