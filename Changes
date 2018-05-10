@@ -1,6 +1,8 @@
 Revision history for Mail-Milter-Authentication-Smime
 
 {{$NEXT}}
+
+2.20180510 2018-05-10 15:37:35+10:00 Australia/Melbourne
         - Improve handling of timeouts
 
 2.20180318 2018-03-18 17:02:38+11:00 Australia/Melbourne
