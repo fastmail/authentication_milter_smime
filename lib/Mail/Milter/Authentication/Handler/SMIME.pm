@@ -1,7 +1,7 @@
 package Mail::Milter::Authentication::Handler::SMIME;
 use strict;
 use warnings;
-use Mail::Milter::Authentication 2;
+use Mail::Milter::Authentication 2.20180510;
 use base 'Mail::Milter::Authentication::Handler';
 # VERSION
 # ABSTRACT: Authentication Milter Module for validation of SMIME
@@ -90,8 +90,8 @@ sub eom_callback {
         }
     };
     if ( my $error = $@ ) {
+        $self->handle_exception( $error );
         $self->log_error( 'SMIME Execution Error ' . $error );
-        die $error if $error =~ /Timeout/;
         my $header = Mail::AuthenticationResults::Header::Entry->new()->set_key( 'smime' )->set_value( 'temperror' );
         $self->add_auth_header( $header );
         $self->{'metric_result'} = 'error';
@@ -196,8 +196,8 @@ sub _check_mime {
     my $is_signed;
     $is_signed = eval{ $smime->isSigned( $data ); };
     if ( my $error = $@ ) {
+        $self->handle_exception( $error );
         $self->log_error( 'SMIME isSigned Error ' . $error );
-        die $error if $error =~ /Timeout/;
     }
 
     if ( $is_signed ) {
@@ -207,8 +207,8 @@ sub _check_mime {
             $source = $smime->check( $data );
         };
         if ( my $error = $@ ) {
+            $self->handle_exception( $error );
             $self->log_error( 'SMIME check Error ' . $error );
-            die $error if $error =~ /Timeout/;
             my $signatures = Crypt::SMIME::getSigners( $data );
             my $all_certs  = Crypt::SMIME::extractCertificates( $data );
             $self->_decode_certs( 'fail', $signatures, $all_certs, $part_id );

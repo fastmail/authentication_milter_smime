@@ -1,6 +1,7 @@
 Revision history for Mail-Milter-Authentication-Smime
 
 {{$NEXT}}
+        - Improve handling of timeouts
 
 2.20180318 2018-03-18 17:02:38+11:00 Australia/Melbourne
         - Pass headers as objects
